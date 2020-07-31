@@ -1,15 +1,73 @@
 name: Prepare for release
 on:
   issues:
-    types: [opened]
+    types: [ opened ]
+
+env:
+  ISSUE_TITLE_PATTERN: "^release\\ (v[0-9]+\\.[0-9]+\\.[0-9]+)$"
+  VERSION_FILE_NAME: version
 
 jobs:
-  hoge:
+  prepare:
     runs-on: ubuntu-latest
-    name: hogehoge
+    outputs:
+      ver: ${{ steps.check_issue_title.outputs.ver }}
     steps:
-      - name: aiueo
+      - name: Check issue title
+        id: check_issue_title
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          echo "Issue title is ${ISSUE_TITLE}"
+          if [[ ${ISSUE_TITLE} =~ ${ISSUE_TITLE_PATTERN} ]]; then \
+            ver="${BASH_REMATCH[1]}"; \
+            echo "::set-output name=ver::${ver}"; \
+          fi
+
+  new_branch:
+    runs-on: ubuntu-latest
+    needs: [ prepare ]
+    if: ${{ needs.prepare.outputs.ver != '' }}
+    env:
+      VERSION: ${{ needs.prepare.outputs.ver }}
+      BRANCH_NAME: release/${{ needs.prepare.outputs.ver }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+      - name: Create/Push new release branch
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git checkout -b ${BRANCH_NAME}
+          echo -n "${VERSION}" > ./${VERSION_FILE_NAME}
+          git add ./${VERSION_FILE_NAME}
+          git commit -m "update version file for ${VERSION}"
+          git push -u origin ${BRANCH_NAME}
+
+      - name: Create PR
+        run: |
+          curl -XPOST https://api.github.com/repos/TakumiKodamaAtMakino/test/pulls \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -d '{
+              "title":"aiueo",
+              "body":"bobo",
+              "base":"master",
+              "head":"'${BRANCH_NAME}'"
+            }'
+
+  # create_pr:
+  #   runs-on: ubuntu-latest
+  #   needs: [ prepare, new_branch ]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Create PullRequest
+  #       uses: peter-evans/create-pull-request@v3
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         title: hogehoge
+  #         branch: release/${{ needs.prepare.outputs.ver }}
+  #         base: master
+  #         body: |
+  #           hogehoge
+  #           hugahuga
