@@ -23,13 +23,13 @@ jobs:
             echo "::set-output name=has_ver::false"; \
           fi
       - name: exit
-        if: ${{ !steps.check_issue_title.has_ver }}
+        if: ${{ !steps.check_issue_title.outputs.has_ver }}
         run: |
           echo "is not a release request issue"
           exit 0
       - name: print version
         env:
-          RELEASE_VERSION: ${{ steps.check_issue_title.ver }}
+          RELEASE_VERSION: ${{ steps.check_issue_title.outputs.ver }}
         run: |
           echo "version is '${RELEASE_VERSION}'"
       # - name: checkout dev
