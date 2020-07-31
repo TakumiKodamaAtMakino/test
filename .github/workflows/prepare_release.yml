@@ -59,7 +59,7 @@ jobs:
             curl -XPOST https://api.github.com/repos/TakumiKodamaAtMakino/test/pulls \
             -H "Authorization: token ${GITHUB_TOKEN}" \
             -d '{
-              "title":"'${VERSION}'",
+              "title":"'${VERSION}' to develop",
               "body":"Close #'${ISSUE_NUMBER}'",
               "base":"develop",
               "head":"'${BRANCH_NAME}'"
