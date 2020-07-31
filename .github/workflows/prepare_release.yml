@@ -3,27 +3,46 @@ on:
   issues:
     types: [opened]
 
+env:
+  ISSUE_TITLE_PATTERN: "^release\ (v[0-9]+\.[0-9]+\.[0-9]+)$"
+
 jobs:
   hoge:
     runs-on: ubuntu-latest
     name: hogehoge
     steps:
-      - name: aiueo
+      - name: Check issue title
+        id: check_issue_title
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          echo "Issue title is ${ISSUE_TITLE}"
-      - name: checkout dev
-        uses: actions/checkout@v2
-        with:
-          ref: develop
-      - name: create new branch
+          if [[ ${ISSUE_TITLE} =~ ${ISSUE_TITLE_PATTERN} ]]; then \
+            echo "::set-output name=has_ver::true"; \
+            echo "::set-output name=ver::${BASH_REMATCH[1]}"; \
+          else \
+            echo "::set-output name=has_ver::false"; \
+          fi
+      - name: exit
+        if: ${{ !steps.check_issue_title.has_ver }}
+        run: |
+          echo "is not a release request issue"
+          exit 0
+      - name: print version
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH_NAME: release/${{ github.event.issue.title }}
+          RELEASE_VERSION: ${{ steps.check_issue_title.ver }}
         run: |
-          git checkout -b ${BRANCH_NAME}
-          git push origin ${BRANCH_NAME}
-      - name: test
-        run: |
-          ls -la
+          echo "version is '${RELEASE_VERSION}'"
+      # - name: checkout dev
+      #   uses: actions/checkout@v2
+      #   with:
+      #     ref: develop
+      # - name: create new branch
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     BRANCH_NAME: release/${{ github.event.issue.title }}
+      #   run: |
+      #     git checkout -b ${BRANCH_NAME}
+      #     git push origin ${BRANCH_NAME}
+      # - name: test
+      #   run: |
+      #     ls -la
