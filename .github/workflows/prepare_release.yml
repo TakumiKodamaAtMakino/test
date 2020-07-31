@@ -13,3 +13,14 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           echo "Issue title is ${ISSUE_TITLE}"
+      - name: checkout dev
+        uses: actions/checkout@v2
+        with:
+          ref: develop
+      - name: create new branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: release/${{ github.event.issue.title }}
+        run: |
+          git checkout -b ${BRANCH_NAME}
+          git push origin ${BRANCH_NAME}
