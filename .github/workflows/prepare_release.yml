@@ -43,7 +43,7 @@ jobs:
           echo -n "${VERSION}" > ./${VERSION_FILE_NAME}
           git add ./${VERSION_FILE_NAME}
           git commit -m "update version file for ${VERSION}"
-          git push origin ${BRANCH_NAME}
+          git push -u origin ${BRANCH_NAME}
 
   create_pr:
     runs-on: ubuntu-latest
