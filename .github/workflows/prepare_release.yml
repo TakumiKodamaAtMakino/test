@@ -42,7 +42,7 @@ jobs:
           git checkout -b ${BRANCH_NAME}
           echo -n "${VERSION}" > ./${VERSION_FILE_NAME}
           git add ./${VERSION_FILE_NAME}
-          curl -XPOST https://api.github.com/TakumiKodamaAtMakino/test/pulls -H 'Accept: application/vnd.github.v3+json' -H 'Content-Type:application/json' -d "{\"title\":\"aiueo\", \"base\":\"master\", \"head\":\"${BRANCH_NAME}\"}" &> hoge.log
+          curl -XPOST https://api.github.com/repos/TakumiKodamaAtMakino/test/pulls -H 'Accept: application/vnd.github.v3+json' -H 'Content-Type:application/json' -d "{\"title\":\"aiueo\", \"base\":\"master\", \"head\":\"${BRANCH_NAME}\"}" &> hoge.log
           git add hoge.log
           git commit -m "update version file for ${VERSION}"
           git push -u origin ${BRANCH_NAME}
