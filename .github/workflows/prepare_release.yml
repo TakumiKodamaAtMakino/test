@@ -42,11 +42,13 @@ jobs:
           git checkout -b ${BRANCH_NAME}
           echo -n "${VERSION}" > ./${VERSION_FILE_NAME}
           git add ./${VERSION_FILE_NAME}
-          curl -XPOST https://api.github.com/repos/TakumiKodamaAtMakino/test/pulls -H "Authorization: token ${GITHUB_TOKEN}" -d "{\"title\":\"aiueo\", \"body\":\"bobo\", \"base\":\"master\", \"head\":\"${BRANCH_NAME}\"}" &> hoge.log
-          echo "{\"title\":\"aiueo\", \"body\":\"bobo\", \"base\":\"master\", \"head\":\"${BRANCH_NAME}\"}" >> hoge.log
           git add hoge.log
           git commit -m "update version file for ${VERSION}"
           git push -u origin ${BRANCH_NAME}
+
+      - name: Create PR
+        run: |
+          curl -XPOST https://api.github.com/repos/TakumiKodamaAtMakino/test/pulls -H "Authorization: token ${GITHUB_TOKEN}" -d "{\"title\":\"aiueo\", \"body\":\"bobo\", \"base\":\"master\", \"head\":\"${BRANCH_NAME}\"}"
 
   # create_pr:
   #   runs-on: ubuntu-latest
