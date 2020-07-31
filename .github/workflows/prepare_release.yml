@@ -45,20 +45,20 @@ jobs:
           git commit -m "update version file for ${VERSION}"
           git push origin ${BRANCH_NAME}
 
-  create_pr:
-    runs-on: ubuntu-latest
-    needs: [ prepare, new_branch ]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          def: release/${{ needs.prepare.outputs.ver }}
-      - name: Create PullRequest
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: hogehoge
-          branch: release/${{ needs.prepare.outputs.ver }}
-          base: master
-          body: |
-            hogehoge
-            hugahuga
+  # create_pr:
+  #   runs-on: ubuntu-latest
+  #   needs: [ prepare, new_branch ]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         def: release/${{ needs.prepare.outputs.ver }}
+  #     - name: Create PullRequest
+  #       uses: peter-evans/create-pull-request@v3
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         title: hogehoge
+  #         branch: release/${{ needs.prepare.outputs.ver }}
+  #         base: master
+  #         body: |
+  #           hogehoge
+  #           hugahuga
