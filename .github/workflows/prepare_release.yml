@@ -17,13 +17,10 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           if [[ ${ISSUE_TITLE} =~ ${ISSUE_TITLE_PATTERN} ]]; then \
-            echo "::set-output name=has_ver::true"; \
             echo "::set-output name=ver::${BASH_REMATCH[1]}"; \
-          else \
-            echo "::set-output name=has_ver::false"; \
           fi
       - name: exit
-        if: ${{ !steps.check_issue_title.outputs.has_ver }}
+        if: ${{ steps.check_issue_title.outputs.ver == '' }}
         run: |
           echo "is not a release request issue"
           exit 0
