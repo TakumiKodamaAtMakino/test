@@ -1,0 +1,15 @@
+name: Prepare for release
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  hoge:
+    runs-on: ubuntu-latest
+    name: hogehoge
+    steps:
+      - name: aiueo
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          echo "Issue title is ${ISSUE_TITLE}"
