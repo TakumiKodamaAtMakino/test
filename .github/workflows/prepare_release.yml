@@ -40,6 +40,8 @@ jobs:
           ref: develop
       - name: Create/Push new release branch
         run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git checkout -b ${BRANCH_NAME}
           echo -n "${VERSION}" > ./${VERSION_FILE_NAME}
           git add ./${VERSION_FILE_NAME}
