@@ -10,9 +10,6 @@ env:
 jobs:
   prepare:
     name: Check release version
-    description: |
-      Check if the issue title is for a release.
-      If so, the version will be stored in ${{ {job}.outputs.ver }}.
     runs-on: ubuntu-latest
     outputs:
       ver: ${{ steps.check_issue_title.outputs.ver }}
@@ -29,9 +26,6 @@ jobs:
 
   new_branch:
     name: Create branch/PR
-    description: |
-      Create new release branch and PullRequests.
-      PullRequests are for master and develop.
     runs-on: ubuntu-latest
     needs: [ prepare ]
     if: ${{ needs.prepare.outputs.ver != '' }}
