@@ -19,7 +19,11 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           if [[ ${ISSUE_TITLE} =~ ${ISSUE_TITLE_PATTERN} ]]; then \
-            echo "::set-output name=ver::${BASH_REMATCH[1]}"; \
+            ver="${BASH_REMATCH[1]}"; \
+            echo "::set-output name=ver::${ver}"; \
+            echo "This issue requests to release new version: ${ver}"; \
+          else \
+            echo "This issue doesn't request to release."; \
           fi
 
   new_branch:
