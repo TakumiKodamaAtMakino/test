@@ -31,6 +31,7 @@ jobs:
       VERSION: ${{ needs.prepare.outputs.ver }}
       BRANCH_NAME: release/${{ needs.prepare.outputs.ver }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -50,9 +51,17 @@ jobs:
           curl -XPOST https://api.github.com/repos/TakumiKodamaAtMakino/test/pulls \
             -H "Authorization: token ${GITHUB_TOKEN}" \
             -d '{
-              "title":"aiueo",
-              "body":"bobo",
+              "title":"'${VERSION}'",
+              "body":"Close #'${ISSUE_NUMBER}'",
               "base":"master",
+              "head":"'${BRANCH_NAME}'"
+            }'
+            curl -XPOST https://api.github.com/repos/TakumiKodamaAtMakino/test/pulls \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -d '{
+              "title":"'${VERSION}'",
+              "body":"Close #'${ISSUE_NUMBER}'",
+              "base":"develop",
               "head":"'${BRANCH_NAME}'"
             }'
 
