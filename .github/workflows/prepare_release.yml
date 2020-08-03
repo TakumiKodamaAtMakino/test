@@ -51,9 +51,9 @@ jobs:
         run: |
           curl -XPOST https://api.github.com/repos/TakumiKodamaAtMakino/test/pulls \
             -H "Authorization: token ${GITHUB_TOKEN}" \
-            -d '{
+            -d $'{
               "title":"'${VERSION}'",
-              "body":"Close #'${ISSUE_NUMBER}'",
+              "body":"Close #'${ISSUE_NUMBER}'\nChange merge title to '\'${VERSION}\''",
               "base":"master",
               "head":"'${BRANCH_NAME}'"
             }'
