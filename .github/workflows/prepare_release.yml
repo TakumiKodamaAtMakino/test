@@ -53,7 +53,7 @@ jobs:
             -H "Authorization: token ${GITHUB_TOKEN}" \
             -d $'{
               "title":"'${VERSION}'",
-              "body":"Close #'${ISSUE_NUMBER}'\nChange merge title to '\'${VERSION}\''",
+              "body":"Close #'${ISSUE_NUMBER}'\nPlease change the commit title of this merge to `'${VERSION}'`.",
               "base":"master",
               "head":"'${BRANCH_NAME}'"
             }'
