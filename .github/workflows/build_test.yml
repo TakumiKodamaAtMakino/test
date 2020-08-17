@@ -11,19 +11,22 @@ jobs:
   docker_build:
     runs-on: ubuntu-latest
     name: build docker image
-    env:
-      DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v1
         with:
-          path: /tmp/docker-registry
-          key: docker-registry-buildkit-${{ github.sha }}
-          restore-keys: docker-registry-buildkit-
-      - name: build
-        run: |
-          docker run -d -p 5000:5000 --restart=always --name registry -v /tmp/docker-registry:/var/lib/registry registry:2
-          npx wait-on tcp:5000
-          docker build -t hogehoge --cache-from=localhost:5000/hogehoge --build-arg BUILDKIT_INLINE_CACHE=1 ${GITHUB_WORKSPACE}
-          docker tag hogehoge localhost:5000/hogehoge
-          docker push localhost:5000/hogehoge
+          path: buildx-cache
+          key: docker-buildx-${{ github.sha }}
+          restore-keys: docker-buildx-
+      - run: |
+          set -eux
+          FROM_ARG=""
+          if [ -e buildx-cache/index.json ]; then
+            FROM_ARG="--cache-from type=local,src=buildx-cache"
+          fi
+          docker buildx build \
+            --file Dockerfile \
+            $FROM_ARG \
+            --cache-to type=local,mode=max,dest=buildx-cache \
+            -t hogehoge:latest \
+            .
