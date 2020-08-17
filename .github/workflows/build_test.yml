@@ -19,6 +19,9 @@ jobs:
           path: buildx-cache
           key: docker-buildx-${{ github.sha }}
           restore-keys: docker-buildx-
+      - if: steps.cache.outputs.cache-hit != 'true'
+        set -eux
+        echo "no cache!"
       - run: |
           set -eux
           FROM_ARG=""
