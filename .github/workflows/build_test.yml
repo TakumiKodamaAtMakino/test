@@ -34,5 +34,6 @@ jobs:
           docker buildx build \
             ${CACHE_FROM_ARGS} \
             --cache-to type=local,mode=max,dest=buildx-cache \
+            --target base
             -t hogehoge:latest \
             .
