@@ -27,7 +27,7 @@ jobs:
           set -eux
           docker buildx build \
             --file Dockerfile \
-            ${{ steps.hogehoge.output.CACHE_FROM_ARGS }} \
+            ${{ steps.hogehoge.outputs.CACHE_FROM_ARGS }} \
             --cache-to type=local,mode=max,dest=buildx-cache \
             -t hogehoge:latest \
             .
