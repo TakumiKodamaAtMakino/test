@@ -32,7 +32,6 @@ jobs:
           fi
 
           docker buildx build \
-            --file Dockerfile \
             ${CACHE_FROM_ARGS} \
             --cache-to type=local,mode=max,dest=buildx-cache \
             -t hogehoge:latest \
