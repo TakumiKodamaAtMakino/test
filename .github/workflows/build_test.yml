@@ -17,7 +17,7 @@ jobs:
         id: cache
         with:
           path: buildx-cache
-          key: docker-buildx-${{ hashFiles('Dockerfile') }}
+          key: docker-buildx-${{ hashFiles('Dockerfile', 'hoge/*') }}
           restore-keys: docker-buildx-
       - if: steps.cache.outputs.cache-hit == 'true'
         id: hogehoge
