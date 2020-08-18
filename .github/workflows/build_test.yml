@@ -19,12 +19,15 @@ jobs:
           path: buildx-cache
           key: docker-buildx-${{ hashFiles('Dockerfile', 'hoge/*') }}
           restore-keys: docker-buildx-
+      - if: steps.cache.outputs.cache-hit == 'true'
+        run: |
+          echo "cache hit!"
       - uses: crazy-max/ghaction-docker-buildx@v3
       - run: |
           set -eux
 
           CACHE_FROM_ARGS=""
-          if [ -d build-cache ]; then
+          if [ -d buildx-cache ]; then
             CACHE_FROM_ARGS="--cache-from type=local,src=buildx-cache"
           fi
 
