@@ -7,50 +7,36 @@ on:
     branches:
       - 'develop'
 
+env:
+  REPO: docker.pkg.github.com/takumikodamaatmakino/test
+
 jobs:
   docker_build:
     runs-on: ubuntu-latest
     name: build docker image
     steps:
       - uses: actions/checkout@v2
+      - name: Calc hash
+        run: echo "::set-env name=SRC_HASH::${{ hashFiles('Dockerfile', 'hoge/*') }}"
       - name: Login to GitHub docker registry
-        if: github.event_name == 'push'
-        uses: azure/docker-login@v1
-        with:
-          login-server: docker.pkg.github.com
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Pull image
         id: pull
         run: |
-          if docker pull docker.pkg.github.com/takumikodamaatmakino/test/hogehoge:${{ hashFiles('Dockerfile', 'hoge/*') }}; then
+          if docker pull ${REPO}/hogehoge:${SRC_HASH}; then
             echo "::set-output name=pulled::true"
           else
+            docker pull ${REPO}/hogehoge:latest || true
             echo "::set-output name=pulled::false"
           fi
-      - uses: actions/cache@v2
-        if: steps.pull.outputs.pulled == 'false'
-        with:
-          path: buildx-cache
-          key: docker-buildx-${{ hashFiles('Dockerfile', 'hoge/*') }}
-          restore-keys: docker-buildx-
-      - uses: crazy-max/ghaction-docker-buildx@v3
-        if: steps.pull.outputs.pulled == 'false'
       - run: |
-          set -eux
-
-          CACHE_FROM_ARGS=""
-          if [ -d buildx-cache ]; then
-            CACHE_FROM_ARGS="--cache-from type=local,src=buildx-cache"
-          fi
-
-          docker buildx build \
-            ${CACHE_FROM_ARGS} \
-            --cache-to type=local,mode=max,dest=buildx-cache \
+          docker build \
             --target base \
-            -t docker.pkg.github.com/takumikodamaatmakino/test/hogehoge:${{ hashFiles('Dockerfile', 'hoge/*') }} \
+            -t ${REPO}/hogehoge:${SRC_HASH} \
+            -t ${REPO}/hogehoge:latest \
             .
 
           docker images
 
-          docker push docker.pkg.github.com/takumikodamaatmakino/test/hogehoge:${{ hashFiles('Dockerfile', 'hoge/*') }}
+          docker push ${REPO}/hogehoge:${SRC_HASH}
+          docker push ${REPO}/hogehoge:latest
