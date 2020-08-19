@@ -29,7 +29,9 @@ jobs:
             docker pull ${REPO}/hogehoge:latest || true
             echo "::set-output name=pulled::false"
           fi
-      - run: |
+      - name: Build image
+        if: steps.pull.outputs.pulled == 'false'
+        run: |
           docker build \
             --target base \
             -t ${REPO}/hogehoge:${SRC_HASH} \
@@ -40,3 +42,6 @@ jobs:
 
           docker push ${REPO}/hogehoge:${SRC_HASH}
           docker push ${REPO}/hogehoge:latest
+      - name: Test
+        run: |
+          docker run -v ${GITHUB_WORKSPACE}:/root/iassist_ros ${REPO}/hogehoge:latest cat /root/iassist_ros/hoge.txt
