@@ -48,8 +48,6 @@ jobs:
             ${CACHE_FROM_ARGS} \
             --cache-to type=local,mode=max,dest=buildx-cache \
             --target base \
-            -t hogehoge:${{ hashFiles('Dockerfile', 'hoge/*') }} \
+            -t docker.pkg.github.com/takumikodamaatmakino/test/hogehoge:${{ hashFiles('Dockerfile', 'hoge/*') }} \
+            --push \
             .
-
-          docker tag hogehoge:${{ hashFiles('Dockerfile', 'hoge/*') }} docker.pkg.github.com/takumikodamaatmakino/test/hogehoge:${{ hashFiles('Dockerfile', 'hoge/*') }}
-          docker push docker.pkg.github.com/takumikodamaatmakino/test/hogehoge:${{ hashFiles('Dockerfile', 'hoge/*') }}
