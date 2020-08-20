@@ -17,7 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Calc hash
-        run: echo "::set-env name=SRC_HASH::${{ hashFiles('Dockerfile', 'hoge/*') }}"
+        run: |
+          echo "::set-env name=SRC_HASH::${{ hashFiles('Dockerfile', 'hoge/*') }}"
+          echo "::warning ${{ github.ref }}"
       - name: Login to GitHub docker registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Pull image
