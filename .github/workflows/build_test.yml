@@ -34,7 +34,7 @@ jobs:
         run: |
           docker build \
             --target base \
-            -t hogehoge:latest
+            -t hogehoge:latest \
             .
 
           docker images
