@@ -39,7 +39,8 @@ jobs:
 
           docker images
 
-          docker tag hogehoge:latest ${REPO}/hogehoge:latest ${REPO}/hogehoge:${SRC_HASH}
+          docker tag hogehoge:latest ${REPO}/hogehoge:latest
+          docker tag hogehoge:latest ${REPO}/hogehoge:${SRC_HASH}
 
           docker images
 
