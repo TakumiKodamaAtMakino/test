@@ -44,7 +44,8 @@ jobs:
 
           docker images
 
-          docker push hogehoge:latest
+          docker push ${REPO}/hogehoge:latest
+          docker push ${REPO}/hogehoge:${SRC_HASH}
       - name: Test
         run: |
           docker run -v ${GITHUB_WORKSPACE}:/root/iassist_ros ${REPO}/hogehoge:latest cat /root/iassist_ros/hoge.txt
