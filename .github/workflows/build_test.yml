@@ -34,14 +34,16 @@ jobs:
         run: |
           docker build \
             --target base \
-            -t ${REPO}/hogehoge:${SRC_HASH} \
-            -t ${REPO}/hogehoge:latest \
+            -t hogehoge:latest
             .
 
           docker images
 
-          docker push ${REPO}/hogehoge:${SRC_HASH}
-          docker push ${REPO}/hogehoge:latest
+          docker tag hogehoge:latest ${REPO}/hogehoge:latest ${REPO}/hogehoge:${SRC_HASH}
+
+          docker images
+
+          docker push hogehoge:latest
       - name: Test
         run: |
           docker run -v ${GITHUB_WORKSPACE}:/root/iassist_ros ${REPO}/hogehoge:latest cat /root/iassist_ros/hoge.txt
