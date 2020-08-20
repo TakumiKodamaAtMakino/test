@@ -35,7 +35,7 @@ jobs:
           docker build \
             --target base \
             -t hogehoge:latest \
-            --cache-from=${REPO}/hogehoge:latest \
+            --cache-from=${REPO}/hogehogea:latest \
             .
 
           docker images
