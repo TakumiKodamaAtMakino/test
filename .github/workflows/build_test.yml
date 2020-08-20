@@ -50,12 +50,14 @@ jobs:
           docker images
 
           docker tag hogehoge:latest ${REPO}/hogehoge:latest
+          docker tag hogehoge:latest ${REPO}/hogehoge:$(cat version)
           docker tag hogehoge:latest ${REPO}/hogehoge:${SRC_HASH}
 
           docker images
 
           docker push ${REPO}/hogehoge:${SRC_HASH}
           docker push ${REPO}/hogehoge:latest
+          docker push ${REPO}/hogehoge:$(cat version)
       - name: Test
         run: |
           docker run -v ${GITHUB_WORKSPACE}:/root/iassist_ros ${REPO}/hogehoge:latest cat /root/iassist_ros/hoge.txt
