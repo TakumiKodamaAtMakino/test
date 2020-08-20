@@ -35,6 +35,7 @@ jobs:
           docker build \
             --target base \
             -t hogehoge:latest \
+            --cache-from=${REPO}/hogehoge:latest \
             .
 
           docker images
@@ -44,8 +45,8 @@ jobs:
 
           docker images
 
-          docker push ${REPO}/hogehoge:latest
           docker push ${REPO}/hogehoge:${SRC_HASH}
+          docker push ${REPO}/hogehoge:latest
       - name: Test
         run: |
           docker run -v ${GITHUB_WORKSPACE}:/root/iassist_ros ${REPO}/hogehoge:latest cat /root/iassist_ros/hoge.txt
