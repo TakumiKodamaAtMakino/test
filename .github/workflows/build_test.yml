@@ -16,6 +16,12 @@ jobs:
     name: build docker image
     steps:
       - uses: actions/checkout@v2
+      - name: hogehoge
+        if: ${{ github.ref }} == 'refs/heads/develop'
+        run: echo "::warning develop!!"
+      - name: hogehoge2
+        if: ${{ github.ref }} != 'refs/heads/develop'
+        run: echo "::warning not develop!!"
       - name: Calc hash
         run: |
           echo "::set-env name=SRC_HASH::${{ hashFiles('Dockerfile', 'hoge/*') }}"
