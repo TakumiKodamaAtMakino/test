@@ -19,7 +19,7 @@ jobs:
       - name: Calc hash
         run: |
           echo "::set-env name=SRC_HASH::${{ hashFiles('Dockerfile', 'hoge/*') }}"
-          echo "::warning ${{ github.ref }}"
+          echo "::warning ${GITHUB_REF#refs/heads/}"
       - name: Login to GitHub docker registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Pull image
