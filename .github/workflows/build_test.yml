@@ -31,11 +31,11 @@ jobs:
       - name: Pull image
         id: pull
         run: |
-          if docker pull ${REPO}/hogehoge:${SRC_HASH}; then
-            echo "::set-output name=pulled::true"
-          else
-            # docker pull ${REPO}/hogehoge:latest || true
+          if ! docker pull ${REPO}/hogehoge:${SRC_HASH}; then
+            docker pull ${REPO}/hogehoge:latest || true
             echo "::set-output name=pulled::false"
+          else
+            echo "::set-output name=pulled::true"
           fi
       - name: Build image
         if: steps.pull.outputs.pulled == 'false'
