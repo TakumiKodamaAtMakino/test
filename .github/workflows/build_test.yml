@@ -1,0 +1,63 @@
+name: catkin_make@kinetic
+on:
+  push:
+    branches:
+      - 'develop'
+  pull_request:
+    branches:
+      - 'develop'
+
+env:
+  REPO: docker.pkg.github.com/takumikodamaatmakino/test
+
+jobs:
+  docker_build:
+    runs-on: ubuntu-latest
+    name: build docker image
+    steps:
+      - uses: actions/checkout@v2
+      - name: hogehoge
+        if: github.ref == 'refs/heads/develop'
+        run: echo "::warning develop!!"
+      - name: hogehoge2
+        if: github.ref != 'refs/heads/develop'
+        run: echo "::warning not develop!!"
+      - name: Calc hash
+        run: |
+          echo "::set-env name=SRC_HASH::${{ hashFiles('Dockerfile', 'hoge/*') }}"
+          echo "::warning ${GITHUB_REF#refs/heads/}"
+      - name: Login to GitHub docker registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      - name: Pull image
+        id: pull
+        run: |
+          if ! docker pull ${REPO}/hogehoge:${SRC_HASH}; then
+            docker pull ${REPO}/hogehoge:latest || true
+            echo "::set-output name=pulled::false"
+          else
+            echo "::set-output name=pulled::true"
+          fi
+      - name: Build image
+        if: steps.pull.outputs.pulled == 'false'
+        run: |
+          docker build \
+            --target base \
+            -t hogehoge:latest \
+            --cache-from=${REPO}/hogehoge:latest \
+            --cache-from=${REPO}/hogehogea:latest \
+            .
+
+          docker images
+
+          docker tag hogehoge:latest ${REPO}/hogehoge:latest
+          docker tag hogehoge:latest ${REPO}/hogehoge:$(cat version)
+          docker tag hogehoge:latest ${REPO}/hogehoge:${SRC_HASH}
+
+          docker images
+
+          docker push ${REPO}/hogehoge:${SRC_HASH}
+          docker push ${REPO}/hogehoge:latest
+          docker push ${REPO}/hogehoge:$(cat version)
+      - name: Test
+        run: |
+          docker run -v ${GITHUB_WORKSPACE}:/root/iassist_ros ${REPO}/hogehoge:latest cat /root/iassist_ros/hoge.txt
